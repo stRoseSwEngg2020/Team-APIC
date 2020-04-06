@@ -1,0 +1,82 @@
+{% extends "index.html" %}
+{% load static %}
+{% block title%}Order Here{% endblock %}
+{% block container %}
+	{% if user.is_authenticated %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title">Add Streamers</h5>
+    </div>
+    <div class="card-body">
+        <form id="form_stream" class="form_stream" >
+					
+			<div class="form-row">
+				<label for="name">Name:</label> 
+				<input type="text" name="name" required id="name">
+			</div>
+			<div class="form-row">
+				<label for="detail">Details:</label> 
+				<input type="text" name="detail" required id="detail">
+			</div>
+            <div class="form-row">
+				<label for="url">Url:</label> 
+				<input type="text" name="url" required id="url">
+			</div>
+   
+
+            <div class="form-row">
+				<label for="files">Upload Files:</label> 
+				<input type="file" name="files" required id="files" accept=".xlsx, .xls" >
+			</div>
+            <button type="submit" class="btn btn-success">Create</button>
+        </form>
+    </div>
+</div>
+
+{% else %}
+	Not a valid user
+	{% endif %}
+{% endblock %}
+
+{% block custom_js %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+
+<script>
+        $(function () {
+			console.log("dixitttttttttt");
+            let form1 = $('#form_stream');
+            form1.parsley();
+            form1.submit(function (e) {
+                form1.parsley().validate();
+                if (form1.parsley().isValid()) {
+                    let data = new FormData(form1[0]);
+                    $.ajax({
+                        url: "{% url 'create-streamer' %}",
+                        type: 'POST',
+                        data: data,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.status) {
+                                alert(data.message)
+                            } else {
+                                alert(data.message)
+                            }
+                        },
+                        error: function (data) {
+                            alert(data.message)
+                        }
+                    }).done(function (data) {
+                        form1[0].reset();
+                        form1.parsley().destroy();
+                    });
+                }
+                e.preventDefault();
+            });
+        });
+</script>
+{% endblock %}
