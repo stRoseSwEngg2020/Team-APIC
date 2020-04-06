@@ -1,0 +1,46 @@
+{% extends "index.html" %}
+{% block title %}
+List of Streamers
+{% endblock %}
+{% block container %}
+	{% if user.is_authenticated %}
+<div>
+    <a class="nav-link" href="{% url 'create-streamer' %}"><i class="fa fa-user-plus"></i> Add Streamers</a>
+</div>
+<table class="table">
+    <tr>
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Streamers Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">urls</th>
+                <th scope="col">detials</th>
+                <th scope="col">file name</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for streamer in streamers %}
+            <tr>
+                <td>{{streamer.id}}</td>
+                <td>{{streamer.name}}</td>
+                <td>{{streamer.url}}</td>
+                <td>{{streamer.details}}</td>
+                <td>{{streamer.movies.url}}</td>
+                <td>
+                    <a href="{% url 'update-streamer' pk=streamer.id %}" style="padding:inherit"><i class="fa fa-pencil-square-o"></i></a>
+                    <a href="{% url 'delete-streamer' pk=streamer.id %}"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+</table>
+{% if is_paginated %}
+    {% include "pagination.html" %}
+{% endif %}
+
+{% else %}
+	Not a valid user
+	{% endif %}
+
+{% endblock %}
